@@ -1,0 +1,5 @@
+{
+    "game_ids_filename": "game_ids/classifier.gameid",
+    "samples_per_game": 100,
+    "vector_tag": "trial"
+}
