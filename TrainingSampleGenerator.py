@@ -13,6 +13,7 @@ class TrainingSampleGenerator:
         self.samples_per_game = self.experiment.variables["samples_per_game"]
         self.samples = []
         self.game_ids = []
+        self.games = []
         self.vectors = vectors
 
     def load_game_ids(self):
@@ -31,8 +32,13 @@ class TrainingSampleGenerator:
             game = Game(game_id)
             samples_from_this_game = game.get_training_samples(self.samples_per_game,
                                                                self.vectors)
+            self.games.append(game)
             self.samples.extend(samples_from_this_game)
 
     def save_samples(self):
         # save in npy format
+        pass
+
+    def samples_already_present(self):
+        # load them if present
         pass
