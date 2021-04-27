@@ -38,7 +38,7 @@ class Vectors:
         numbers = [int(number) for number in vector.split(',')]
         entity_id = str(numbers[0])
         name = self.entity_id_name_table[entity_id]
-        vector = np.array(numbers[1:])
+        vector = numbers[1:]
         return name, vector
 
     def build_entity_id_name_table(self):

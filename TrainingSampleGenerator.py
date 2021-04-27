@@ -1,6 +1,8 @@
 import json
 import os
 
+from tqdm import tqdm
+
 from Game import Game
 
 
@@ -28,10 +30,9 @@ class TrainingSampleGenerator:
 
     def generate_samples(self):
         self.load_game_ids()
-        for game_id in self.game_ids:
-            game = Game(game_id)
-            samples_from_this_game = game.get_training_samples(self.samples_per_game,
-                                                               self.vectors)
+        for game_id in tqdm(self.game_ids):
+            game = Game(game_id, self.experiment)
+            samples_from_this_game = game.get_training_samples(self.vectors)
             self.games.append(game)
             self.samples.extend(samples_from_this_game)
 
