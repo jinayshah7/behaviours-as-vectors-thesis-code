@@ -11,8 +11,9 @@ class TrainingSampleGenerator:
 
     def __init__(self, experiment, vectors):
         self.experiment = experiment
-        self.game_ids_filename = self.experiment.variables["game_ids_filename"]
+        self.game_ids_filename = self.experiment.variables["classifier_game_ids_filename"]
         self.samples_per_game = self.experiment.variables["samples_per_game"]
+        self.sample_filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{self.experiment.variables["sample_filename"]}'
         self.samples = []
         self.game_ids = []
         self.games = []
@@ -37,9 +38,5 @@ class TrainingSampleGenerator:
             self.samples.extend(samples_from_this_game)
 
     def save_samples(self):
-        # save in npy format
-        pass
-
-    def samples_already_present(self):
-        # load them if present
-        pass
+        with open(self.sample_filename, 'w') as f:
+            json.dump(self.samples, f)

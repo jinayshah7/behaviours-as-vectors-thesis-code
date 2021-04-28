@@ -29,6 +29,7 @@ class Graph:
         with open(self.graph_filename) as f:
             file_json_data = json.load(f)
             edges = file_json_data["edges"]
+            self.graph.add_edges_from(edges)
 
     def already_exists(self):
         if os.path.isfile(self.graph_filename):

@@ -1,5 +1,8 @@
 {
-    "game_ids_filename": "game_ids/classifier.gameid",
+    "classifier_game_ids_filename": "game_ids/classifier.gameid",
+    "vector_game_ids_filename": "game_ids/vector.gameid",
     "samples_per_game": 100,
-    "vector_tag": "trial"
+    "vector_tag": "trial",
+    "sample_filename": "sample.json",
+    "vector_training_edges_filename": "edges.txt"
 }

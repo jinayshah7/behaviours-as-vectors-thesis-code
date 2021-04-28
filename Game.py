@@ -43,9 +43,10 @@ class Game:
 
     def json_is_valid(self):
         condition_1 = "teamfights" in self.json
-        condition_2 = self.json["teamfights"] is not None
+        condition_2 = self.json.get("teamfights", None) is not None
+        condition_3 = len(self.json.get("teamfights", None)) > 0
 
-        return condition_1 and condition_2
+        return condition_1 and condition_2 and condition_3
 
     def get_training_samples(self, vectors):
         self.build_vector_timeline(vectors)
@@ -109,6 +110,13 @@ class Game:
 
     # TODO
     def sample_vector_timeline(self):
+        # get the number of timestamps
+        # select a random number
+        # get the number of vectors at each timestamp
+        # select a random number x2 (for 2 entities)
+        # get their vectors
+        # check if they interact after that timestamp
+        # return vectors and answer
         x = self.vector_timeline
         vector_1 = [0, 0]
         entity_1 = '0'
