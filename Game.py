@@ -54,6 +54,7 @@ class Game:
         number_of_samples = self.experiment.variables['samples_per_game']
 
         for i in range(number_of_samples):
+            # account for duplicates
             entity_1, entity_2, timestamp = self.sample_vector_timeline()
             answer = self.if_entities_interact_after_timestamp(entity_1,
                                                                entity_2,

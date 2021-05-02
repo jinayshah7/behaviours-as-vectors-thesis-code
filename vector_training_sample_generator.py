@@ -13,8 +13,10 @@ class VectorTrainingSampleGenerator:
     def __init__(self, experiment):
         self.experiment = experiment
         self.game_ids_filename = self.experiment.variables["vector_game_ids_filename"]
-        self.vector_training_edges_filename = self.experiment.variables["vector_training_edges_filename"]
-        self.vector_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.vector_training_edges_filename}"
+        self.node2vec_training_edges_filename = self.experiment.variables["node2vec_training_edges_filename"]
+        self.node2vec_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.node2vec_training_edges_filename}"
+        self.tgn_training_edges_filename = self.experiment.variables["tgn_training_edges_filename"]
+        self.tgn_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.tgn_training_edges_filename}"
         self.samples = []
         self.game_ids = []
         self.edge_list = []
@@ -68,17 +70,23 @@ class VectorTrainingSampleGenerator:
         for entity_number, entity_name in enumerate(all_entities):
             self.name_id_mapping[entity_name] = entity_number
 
-    def save_edges(self):
-        with open(self.vector_training_edges_filename, 'w') as f:
-            for single_edge in self.edge_list:
+    def save_edges_for_tgn(self):
+        with open(self.tgn_training_edges_filename, 'w') as f:
+            for single_edge in sorted(self.edge_list, key=lambda x: x[2]):
                 f.write(f"{single_edge[0]},{single_edge[1]},{single_edge[2]}\n")
+
+    def save_edges_for_node2vec(self):
+        with open(self.node2vec_training_edges_filename, 'w') as f:
+            for single_edge in self.edge_list:
+                f.write(f"{single_edge[0]},{single_edge[1]}\n")
 
 
 e = Experiment("trial4")
 v = VectorTrainingSampleGenerator(e)
 v.generate_big_graph()
 v.build_edge_list()
-v.save_edges()
+v.save_edges_for_tgn()
+v.save_edges_for_node2vec()
 for edge in v.graph.edges:
     print(edge)
 

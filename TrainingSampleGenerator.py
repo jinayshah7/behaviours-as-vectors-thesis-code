@@ -13,7 +13,7 @@ class TrainingSampleGenerator:
         self.experiment = experiment
         self.game_ids_filename = self.experiment.variables["classifier_game_ids_filename"]
         self.samples_per_game = self.experiment.variables["samples_per_game"]
-        self.sample_filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{self.experiment.variables["sample_filename"]}'
+        self.sample_filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{self.experiment.variables["training_sample_filename"]}'
         self.samples = []
         self.game_ids = []
         self.games = []

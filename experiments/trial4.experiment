@@ -3,6 +3,7 @@
     "vector_game_ids_filename": "game_ids/vector.gameid",
     "samples_per_game": 100,
     "vector_tag": "trial",
-    "sample_filename": "sample.json",
-    "vector_training_edges_filename": "edges.txt"
+    "training_sample_filename": "sample.json",
+    "node2vec_training_edges_filename": "simple.edges",
+    "tgn_training_edges_filename": "tgn.edges",
 }
