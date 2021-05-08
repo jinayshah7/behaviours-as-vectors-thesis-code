@@ -1,9 +1,9 @@
 import json
 import os
+
 import networkx as nx
 from tqdm import tqdm
 
-from Experiment import Experiment
 from Game import Game
 
 
@@ -77,17 +77,7 @@ class VectorTrainingSampleGenerator:
 
     def save_edges_for_node2vec(self):
         with open(self.node2vec_training_edges_filename, 'w') as f:
-            for single_edge in self.edge_list:
-                f.write(f"{single_edge[0]},{single_edge[1]}\n")
-
-
-e = Experiment("trial4")
-v = VectorTrainingSampleGenerator(e)
-v.generate_big_graph()
-v.build_edge_list()
-v.save_edges_for_tgn()
-v.save_edges_for_node2vec()
-for edge in v.graph.edges:
-    print(edge)
-
-
+            edges = [(edge[0], edge[1]) for edge in self.edge_list]
+            edges = list(set(edges))
+            for single_edge in edges:
+                f.write(f"{single_edge[0]} {single_edge[1]}\n")

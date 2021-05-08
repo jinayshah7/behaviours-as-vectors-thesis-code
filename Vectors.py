@@ -35,9 +35,9 @@ class Vectors:
             return True
 
     def process_vector_from_file(self, vector):
-        numbers = [int(number) for number in vector.split(',')]
+        numbers = [float(number) for number in vector.split()]
         entity_id = str(numbers[0])
-        name = self.entity_id_name_table[entity_id]
+        name = self.entity_id_name_table.get(entity_id, str(numbers[0]))
         vector = numbers[1:]
         return name, vector
 

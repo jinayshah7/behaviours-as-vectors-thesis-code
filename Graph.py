@@ -24,12 +24,13 @@ class Graph:
         self.get_hero_ids()
         self.parse_player_summary()
         self.parse_teamfights()
+        self.save_graph()
 
     def load_graph_from_file(self):
         with open(self.graph_filename) as f:
-            file_json_data = json.load(f)
-            edges = file_json_data["edges"]
+            edges = json.load(f)
             self.graph.add_edges_from(edges)
+            print()
 
     def already_exists(self):
         if os.path.isfile(self.graph_filename):
@@ -92,8 +93,17 @@ class Graph:
         self.graph.add_edge(node_1, node_2, timeslot=timeslot)
 
     def get_hero_ids(self):
+        print()
+        hero_ids = [player["hero_id"] for player in self.json["players"]]
+        for player_number, hero_id in enumerate(hero_ids):
+            self.player_number_to_hero_id[player_number] = hero_id
         pass
 
     def build_sorted_edges(self):
         edges = self.graph.edges(data=True)
         self.sorted_edges = sorted(edges, key=lambda edge: edge[2]['timeslot'])
+
+    def save_graph(self):
+        self.build_sorted_edges()
+        with open(self.graph_filename, 'w') as f:
+            json.dump(self.sorted_edges, f)

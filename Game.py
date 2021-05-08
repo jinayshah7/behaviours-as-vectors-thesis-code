@@ -1,6 +1,9 @@
 import json
 import os
+import random
+
 import requests as r
+from tqdm import tqdm
 
 from Graph import Graph
 from secrets import API_KEY, API_URL
@@ -84,7 +87,8 @@ class Game:
         self.graph.build_sorted_edges()
 
         self.vector_timeline[-1] = vectors.vectors
-        for edge in self.graph.sorted_edges:
+        print("Processing edges...")
+        for edge in tqdm(self.graph.sorted_edges):
             self.update_vector_timeline(edge, vectors)
             
         self.fill_empty_spaces_in_vector_timeline()
@@ -112,19 +116,22 @@ class Game:
     # TODO
     def sample_vector_timeline(self):
         # get the number of timestamps
-        # select a random number
-        # get the number of vectors at each timestamp
-        # select a random number x2 (for 2 entities)
-        # get their vectors
-        # check if they interact after that timestamp
-        # return vectors and answer
-        x = self.vector_timeline
-        vector_1 = [0, 0]
-        entity_1 = '0'
-        vector_2 = [0, 0]
-        entity_2 = '0'
+        random.seed(self.experiment.variables["random_seed"])
 
-        return (entity_1, vector_1), (entity_2, vector_2), [0]
+        random_timestamp = random.choice(list(self.vector_timeline.keys()))
+        vectors_at_random_timestamp = self.vector_timeline[random_timestamp]
+
+        random_entity_1 = random.choice(list(vectors_at_random_timestamp.keys()))
+        random_entity_2 = random.choice(list(vectors_at_random_timestamp.keys()))
+
+        while random_entity_1 == random_entity_2:
+            random_entity_2 = random.choice(list(vectors_at_random_timestamp.keys()))
+
+        random_entity_vector_1 = vectors_at_random_timestamp[random_entity_1]
+        random_entity_vector_2 = vectors_at_random_timestamp[random_entity_2]
+        return (random_entity_1, random_entity_vector_1),\
+               (random_entity_2, random_entity_vector_2),\
+               [0]
 
     def update_vector_timeline(self, edge, vectors):
         timeslot = edge[2]['timeslot']

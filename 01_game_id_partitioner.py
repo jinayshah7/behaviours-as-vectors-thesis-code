@@ -1,6 +1,5 @@
 import json
 from tqdm import tqdm
-from Game import Game
 
 ALL_GAME_IDS_FILE = "game_ids/all.gameid"
 IDS_RESERVED_FOR_VECTORS_FILENAME = "game_ids/vector.gameid"
@@ -38,6 +37,11 @@ def save_game_ids(game_ids, filename):
 def main():
     game_ids = get_all_game_ids(ALL_GAME_IDS_FILE)
     game_ids.sort()
+    # random shuffle here with a fixed seed
+    # make a loop of experiments
+    # keep experiment name in the filename "{experiment_name}_{type}.gameid"
+    # apply the filename changes in the other scripts
+    # get percentage to reserve for vectors from the experiment file
 
     amount_to_reserve_for_vectors = int(PERCENT_TO_RESERVE_FOR_VECTORS * len(game_ids))
 

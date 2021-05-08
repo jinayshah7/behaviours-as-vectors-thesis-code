@@ -2,8 +2,10 @@
     "classifier_game_ids_filename": "game_ids/classifier.gameid",
     "vector_game_ids_filename": "game_ids/vector.gameid",
     "samples_per_game": 100,
-    "vector_tag": "trial",
+    "vector_tag": "node2vec_trial",
     "training_sample_filename": "sample.json",
     "node2vec_training_edges_filename": "simple.edges",
     "tgn_training_edges_filename": "tgn.edges",
+    "random_seed": 777,
+    "vector_addition_constant": 0.2
 }

@@ -31,7 +31,7 @@ def main():
         sample_generator.save_samples()
 
         classifier = ClassifierTrainer(experiment)
-        classifier.generate_result()
+        # classifier.generate_result()
 
 
 if __name__ == '__main__':
