@@ -7,5 +7,6 @@
     "node2vec_training_edges_filename": "simple.edges",
     "tgn_training_edges_filename": "tgn.edges",
     "random_seed": 777,
-    "vector_addition_constant": 0.2
+    "vector_addition_constant": 0.2,
+    "percentage_to_reserve_for_vectors": 0.9
 }
