@@ -30,7 +30,6 @@ class Graph:
         with open(self.graph_filename) as f:
             edges = json.load(f)
             self.graph.add_edges_from(edges)
-            print()
 
     def already_exists(self):
         if os.path.isfile(self.graph_filename):
@@ -51,6 +50,7 @@ class Graph:
                 self.parse_player_from_teamfight(player, hero_id, timeslot)
 
     def parse_player_from_teamfight(self, player, hero_id, timeslot):
+        # get this list from the experiment object
         ability_uses = list(player["ability_uses"].keys())
         item_uses = list(player["item_uses"].keys())
 
@@ -68,6 +68,7 @@ class Graph:
 
             hero_id = self.player_number_to_hero_id.get(player_number, 0)
 
+            # get this list from the experiment object
             purchase_log = player["purchase_log"]
             kill_log = player["kills_log"]
             rune_log = player["runes_log"]

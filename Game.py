@@ -58,6 +58,7 @@ class Game:
 
         for i in range(number_of_samples):
             # account for duplicates
+            # have a set of picked items, continue picking until it doesn't exist in set
             entity_1, entity_2, timestamp = self.sample_vector_timeline()
             answer = self.if_entities_interact_after_timestamp(entity_1,
                                                                entity_2,
@@ -113,9 +114,7 @@ class Game:
             resultant_vector.append(n1 + n2)
         return resultant_vector
 
-    # TODO
     def sample_vector_timeline(self):
-        # get the number of timestamps
         random.seed(self.experiment.variables["random_seed"])
 
         random_timestamp = random.choice(list(self.vector_timeline.keys()))
