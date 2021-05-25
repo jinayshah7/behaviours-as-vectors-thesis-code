@@ -5,16 +5,16 @@ import numpy as np
 
 class Vectors:
     VECTOR_DIRECTORY = "initial_vectors"
-    ID_TO_NAME_FILENAME = f"{VECTOR_DIRECTORY}/entity_id_names.json"
+    EDGE_NAMES_FILENAME = f"vector_training_samples/trial4_edge_names.json"
 
     def __init__(self, experiment):
         self.experiment = experiment
         self.vectors = {}
+        self.edge_names = {}
         self.tag = self.experiment.variables["vector_tag"]
         self.vector_filename = f"{self.VECTOR_DIRECTORY}/{self.tag}.vector"
         self.load()
         self.error = 0
-        self.entity_id_name_table = {}
 
     def load(self):
         if self.vectors_not_present():
@@ -36,11 +36,11 @@ class Vectors:
 
     def process_vector_from_file(self, vector):
         numbers = [float(number) for number in vector.split()]
-        entity_id = str(numbers[0])
-        name = self.entity_id_name_table.get(entity_id, str(numbers[0]))
+        entity_id = str(int(numbers[0]))
+        name = self.edge_names.get(entity_id, str(int(numbers[0])))
         vector = numbers[1:]
         return name, vector
 
     def build_entity_id_name_table(self):
-        with open(self.ID_TO_NAME_FILENAME) as f:
-            self.entity_id_name_table = json.load(f)
+        with open(self.EDGE_NAMES_FILENAME) as f:
+            self.edge_names = json.load(f)

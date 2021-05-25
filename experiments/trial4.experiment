@@ -1,12 +1,16 @@
 {
-    "classifier_game_ids_filename": "game_ids/classifier.gameid",
+    "classifier_game_ids_filename": "game_ids/node2vec_trial_classifier.gameid",
     "vector_game_ids_filename": "game_ids/vector.gameid",
     "samples_per_game": 100,
-    "vector_tag": "node2vec_trial",
+    "vector_tag": "final_trial",
     "training_sample_filename": "sample.json",
-    "node2vec_training_edges_filename": "simple.edges",
+    "node2vec_training_edges_filename": "node2vec.edges",
     "tgn_training_edges_filename": "tgn.edges",
+    "line_training_edges_filename": "line.edges",
+    "edge_names_filename": "edge_id_names.json",
     "random_seed": 777,
     "vector_addition_constant": 0.2,
-    "percentage_to_reserve_for_vectors": 0.9
+    "percentage_to_reserve_for_vectors": 0.9,
+    "things_to_include_from_teamfights": ["ability_uses", "item_uses"],
+    "things_to_include_from_player_summary": ["purchase_log","kills_log","runes_log"]
 }

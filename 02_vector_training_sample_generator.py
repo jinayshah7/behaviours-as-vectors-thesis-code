@@ -1,16 +1,36 @@
 from Experiment import Experiment
 from VectorTrainingSampleGenerator import VectorTrainingSampleGenerator
 
-# make a loop for experiments
-# save edges for tgn, nodevec, line separately
-# all three will have a different format depending on the code
-# also save the entity_id: entity_name file for each experiment
+EXPERIMENTS = [
+    # "node2vec_variation_1",
+    # "node2vec_variation_2",
+    # "tgn_variation_1",
+    # "tgn_variation_2",
+    # "tgn_variation_3",
+    # "tgn_variation_4",
+    # "line",
+    "trial4"
+]
 
-e = Experiment("trial4")
-v = VectorTrainingSampleGenerator(e)
-v.generate_big_graph()
-v.build_edge_list()
-v.save_edges_for_tgn()
-v.save_edges_for_node2vec()
+
+def main():
+
+    for experiment_name in EXPERIMENTS:
+        experiment = Experiment(experiment_name)
+
+        if experiment.already_done():
+            continue
+
+        ve = VectorTrainingSampleGenerator(experiment)
+        ve.generate_big_graph()
+        ve.build_edge_list()
+        ve.save_edges_for_tgn()
+        ve.save_edges_for_node2vec()
+        ve.save_edges_for_line()
+        ve.save_edge_list()
+
+
+if __name__ == '__main__':
+    main()
 
 

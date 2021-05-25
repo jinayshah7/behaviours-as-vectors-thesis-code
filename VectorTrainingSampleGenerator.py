@@ -9,14 +9,24 @@ from Game import Game
 
 class VectorTrainingSampleGenerator:
     VECTOR_TRAINING_DIRECTORY = "vector_training_samples"
+    GAME_ID_FOLDER = "game_ids/"
 
     def __init__(self, experiment):
         self.experiment = experiment
-        self.game_ids_filename = self.experiment.variables["vector_game_ids_filename"]
+        self.game_ids_filename = self.GAME_ID_FOLDER + self.experiment.variables["vector_tag"] + "_vector.gameid"
+
         self.node2vec_training_edges_filename = self.experiment.variables["node2vec_training_edges_filename"]
         self.node2vec_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.node2vec_training_edges_filename}"
+
+        self.line_training_edges_filename = self.experiment.variables["line_training_edges_filename"]
+        self.line_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.line_training_edges_filename}"
+
         self.tgn_training_edges_filename = self.experiment.variables["tgn_training_edges_filename"]
         self.tgn_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.tgn_training_edges_filename}"
+
+        self.name_id_mapping_filename = self.experiment.variables["edge_names_filename"]
+        self.name_id_mapping_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.name_id_mapping_filename}"
+
         self.samples = []
         self.game_ids = []
         self.edge_list = []
@@ -81,3 +91,18 @@ class VectorTrainingSampleGenerator:
             edges = list(set(edges))
             for single_edge in edges:
                 f.write(f"{single_edge[0]} {single_edge[1]}\n")
+
+    def save_edges_for_line(self):
+        with open(self.line_training_edges_filename, 'w') as f:
+            edges = [(edge[0], edge[1]) for edge in self.edge_list]
+            edges = list(set(edges))
+            for single_edge in edges:
+                f.write(f"{single_edge[0]} {single_edge[1]}\n")
+
+    def save_edge_list(self):
+        new_reverse_mapping = {}
+        for key, value in self.name_id_mapping.items():
+            new_reverse_mapping[value] = key
+
+        with open(self.name_id_mapping_filename, 'w') as f:
+            json.dump(new_reverse_mapping, f)

@@ -6,14 +6,16 @@ import networkx as nx
 class Graph:
     GRAPH_DIRECTORY = "game_graph_files"
 
-    def __init__(self, game_id):
+    def __init__(self, game_id, experiment):
         self.id = game_id
+        self.experiment = experiment
         self.graph = nx.MultiGraph()
         self.graph_filename = f'{self.GRAPH_DIRECTORY}/{self.id}.graph'
         self.timeslots = []
         self.json = {}
         self.player_number_to_hero_id = {}
         self.sorted_edges = None
+        # self.build()
 
     def build(self, json_data):
         self.json = json_data
@@ -50,12 +52,11 @@ class Graph:
                 self.parse_player_from_teamfight(player, hero_id, timeslot)
 
     def parse_player_from_teamfight(self, player, hero_id, timeslot):
-        # get this list from the experiment object
-        ability_uses = list(player["ability_uses"].keys())
-        item_uses = list(player["item_uses"].keys())
+        things_to_include_from_teamfights = self.experiment.variables["things_to_include_from_teamfights"]
 
-        self.add_edges_to_graph(hero_id, ability_uses, timeslot)
-        self.add_edges_to_graph(hero_id, item_uses, timeslot)
+        for thing in things_to_include_from_teamfights:
+            list_of_edges_from_thing = list(player[thing].keys())
+            self.add_edges_to_graph(hero_id, list_of_edges_from_thing, timeslot)
 
     def parse_player_items(self, items, hero_id):
         for item in items:
@@ -67,15 +68,11 @@ class Graph:
         for player_number, player in enumerate(self.json["players"]):
 
             hero_id = self.player_number_to_hero_id.get(player_number, 0)
+            things_to_include_from_player_summary = self.experiment.variables["things_to_include_from_player_summary"]
 
-            # get this list from the experiment object
-            purchase_log = player["purchase_log"]
-            kill_log = player["kills_log"]
-            rune_log = player["runes_log"]
-
-            self.parse_player_items(purchase_log, hero_id)
-            self.parse_player_items(kill_log, hero_id)
-            self.parse_player_items(rune_log, hero_id)
+            for thing in things_to_include_from_player_summary:
+                thing = player[thing]
+                self.parse_player_items(thing, hero_id)
 
     def get_timeslot(self, timestamp):
         for i in range(len(self.timeslots)-1):
@@ -94,11 +91,9 @@ class Graph:
         self.graph.add_edge(node_1, node_2, timeslot=timeslot)
 
     def get_hero_ids(self):
-        print()
         hero_ids = [player["hero_id"] for player in self.json["players"]]
         for player_number, hero_id in enumerate(hero_ids):
             self.player_number_to_hero_id[player_number] = hero_id
-        pass
 
     def build_sorted_edges(self):
         edges = self.graph.edges(data=True)

@@ -31,7 +31,7 @@ class TrainingSampleGenerator:
 
     def generate_samples(self):
         self.load_game_ids()
-        for game_id in tqdm(self.game_ids[:10]):
+        for game_id in tqdm(self.game_ids[:4]):
             game = Game(game_id, self.experiment)
             samples_from_this_game = game.get_training_samples(self.vectors)
             self.games.append(game)

@@ -4,7 +4,7 @@ import random
 from Experiment import Experiment
 
 ALL_GAME_IDS_FILE = "game_ids/all.gameid"
-GAME_ID_FOLDER = "game_id/"
+GAME_ID_FOLDER = "game_ids/"
 
 EXPERIMENTS = [
     # "node2vec_variation_1",
@@ -57,7 +57,7 @@ def main():
         vector_game_ids_filename = GAME_ID_FOLDER + experiment.variables["vector_tag"] + "_vector.gameid"
 
         save_game_ids(vector_ids, classifier_game_ids_filename)
-        save_game_ids(classifier_ids,vector_game_ids_filename)
+        save_game_ids(classifier_ids, vector_game_ids_filename)
 
 
 if __name__ == '__main__':

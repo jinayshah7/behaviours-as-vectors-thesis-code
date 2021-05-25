@@ -18,13 +18,14 @@ class ClassifierTrainer:
     def generate_result(self):
         self.load_samples()
         self.format_samples()
-        # replace this random state = 0 with seed from experiment
+        random_seed = self.experiment.variables["random_seed"]
+
         # put some hyper-parameter tuning code here
-        clf = LogisticRegression(random_state=0).fit(self.vectors,
-                                                     self.target_variable)
+        clf = LogisticRegression(random_state=random_seed).fit(self.vectors,
+                                                               self.target_variable)
         clf.score(self.vectors,
                   self.target_variable)
-        # add code to save results in a json file
+        self.save_samples()
 
     def load_samples(self):
         with open(self.sample_filename) as f:
@@ -36,5 +37,5 @@ class ClassifierTrainer:
         self.target_variable = array([row[-1] for row in rows])
         self.vectors = array([row[:-1] for row in rows])
 
-    def format_samples(self):
+    def save_samples(self):
         pass

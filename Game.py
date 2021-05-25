@@ -17,11 +17,12 @@ class Game:
         self.id = game_id
         self.experiment = experiment
         self.json = {}
-        self.graph = Graph(self.id)
+        self.graph = Graph(self.id, experiment)
         self.vector_timeline = {}
         self.training_samples = []
         self.vector_relation_method = None
         self.reserved_for_vector_training = False
+        self.edge_frequency = {}
 
         self.json_filename = f'{self.GAME_JSON_DIRECTORY}/{self.id}.json'
         self.vector_timeline_filename = f'{self.VECTOR_TIMELINE_DIRECTORY}/{self.experiment.variables["vector_tag"]}_{self.id}.vtime '
@@ -55,6 +56,7 @@ class Game:
         self.build_vector_timeline(vectors)
         self.training_samples = []
         number_of_samples = self.experiment.variables['samples_per_game']
+        self.build_edge_frequency()
 
         for i in range(number_of_samples):
             # account for duplicates
@@ -83,12 +85,18 @@ class Game:
                 self.vector_timeline = json.load(f)
             return
 
-        self.download_json()
+        try:
+            self.download_json()
+        except:
+            pass
+
         self.build_graph()
         self.graph.build_sorted_edges()
 
         self.vector_timeline[-1] = vectors.vectors
+
         print("Processing edges...")
+
         for edge in tqdm(self.graph.sorted_edges):
             self.update_vector_timeline(edge, vectors)
             
@@ -177,3 +185,13 @@ class Game:
             for key, value in values_from_previous_timeslot.items():
                 if key not in self.vector_timeline[current_timeslot]:
                     self.vector_timeline[current_timeslot][key] = value
+
+    def build_edge_frequency(self):
+        for u, v, d in self.graph.graph.edges(data=True):
+            edge = (u, v)
+            if edge not in self.edge_frequency:
+                self.edge_frequency[edge] = (-5, 0)
+            last_seen_timeslot, frequency = self.edge_frequency[edge]
+            if d['timeslot'] > last_seen_timeslot:
+                d['timeslot'] = last_seen_timeslot
+            self.edge_frequency[(u, v)] = (d['timeslot'], frequency+1)
