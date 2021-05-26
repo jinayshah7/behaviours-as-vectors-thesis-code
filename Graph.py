@@ -97,7 +97,16 @@ class Graph:
 
     def build_sorted_edges(self):
         edges = self.graph.edges(data=True)
-        self.sorted_edges = sorted(edges, key=lambda edge: edge[2]['timeslot'])
+
+        self.sorted_edges = []
+        for edge in edges:
+            if 'timeslot' not in edge[2]:
+                continue
+            else:
+                self.sorted_edges.append((edge[0], edge[1], edge[2]['timeslot']))
+
+        self.sorted_edges = list(set(self.sorted_edges))
+        self.sorted_edges = sorted(self.sorted_edges, key=lambda edge: edge[2])
 
     def save_graph(self):
         self.build_sorted_edges()

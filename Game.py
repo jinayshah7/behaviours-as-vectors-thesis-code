@@ -47,24 +47,26 @@ class Game:
 
     def json_is_valid(self):
         condition_1 = "teamfights" in self.json
-        condition_2 = self.json.get("teamfights", None) is not None
-        condition_3 = len(self.json.get("teamfights", None)) > 0
+        if self.json.get("teamfights", None) is None:
+            return False
+        condition_3 = len(self.json.get("teamfights", [])) > 0
 
-        return condition_1 and condition_2 and condition_3
+        return condition_1 and condition_3
 
     def get_training_samples(self, vectors):
         self.build_vector_timeline(vectors)
         self.training_samples = []
-        number_of_samples = self.experiment.variables['samples_per_game']
         self.build_edge_frequency()
 
+        number_of_samples = self.experiment.variables['samples_per_game']
+        random.seed(self.experiment.variables["random_seed"])
+
         for i in range(number_of_samples):
-            # account for duplicates
-            # have a set of picked items, continue picking until it doesn't exist in set
-            entity_1, entity_2, timestamp = self.sample_vector_timeline()
-            answer = self.if_entities_interact_after_timestamp(entity_1,
-                                                               entity_2,
-                                                               timestamp)
+            try:
+                entity_1, entity_2, answer = self.sample_vector_timeline()
+            except:
+                continue
+
             sample = entity_1[1] + entity_2[1] + answer
 
             self.training_samples.append(sample)
@@ -83,7 +85,6 @@ class Game:
         if self.vector_timeline_already_exists():
             with open(self.vector_timeline_filename) as f:
                 self.vector_timeline = json.load(f)
-            return
 
         try:
             self.download_json()
@@ -92,14 +93,13 @@ class Game:
 
         self.build_graph()
         self.graph.build_sorted_edges()
-
         self.vector_timeline[-1] = vectors.vectors
 
         print("Processing edges...")
 
         for edge in tqdm(self.graph.sorted_edges):
             self.update_vector_timeline(edge, vectors)
-            
+
         self.fill_empty_spaces_in_vector_timeline()
 
         with open(self.vector_timeline_filename, 'w') as f:
@@ -123,25 +123,21 @@ class Game:
         return resultant_vector
 
     def sample_vector_timeline(self):
-        random.seed(self.experiment.variables["random_seed"])
 
-        random_timestamp = random.choice(list(self.vector_timeline.keys()))
-        vectors_at_random_timestamp = self.vector_timeline[random_timestamp]
+        random_entity_1, random_entity_2 = random.choice(list(self.edge_frequency.keys()))
 
-        random_entity_1 = random.choice(list(vectors_at_random_timestamp.keys()))
-        random_entity_2 = random.choice(list(vectors_at_random_timestamp.keys()))
+        last_seen, _ = self.edge_frequency[(random_entity_1, random_entity_2)]
+        random_timestamp, answer = self.find_timestamp(last_seen)
 
-        while random_entity_1 == random_entity_2:
-            random_entity_2 = random.choice(list(vectors_at_random_timestamp.keys()))
+        random_entity_vector_1 = self.vector_timeline[random_timestamp][random_entity_1]
+        random_entity_vector_2 = self.vector_timeline[random_timestamp][random_entity_2]
 
-        random_entity_vector_1 = vectors_at_random_timestamp[random_entity_1]
-        random_entity_vector_2 = vectors_at_random_timestamp[random_entity_2]
-        return (random_entity_1, random_entity_vector_1),\
-               (random_entity_2, random_entity_vector_2),\
-               [0]
+        return (random_entity_1, random_entity_vector_1), \
+               (random_entity_2, random_entity_vector_2), \
+               [answer]
 
     def update_vector_timeline(self, edge, vectors):
-        timeslot = edge[2]['timeslot']
+        timeslot = int(edge[2])
 
         if timeslot not in self.vector_timeline:
             self.vector_timeline[timeslot] = {}
@@ -162,24 +158,24 @@ class Game:
         edges_before_timeslot = []
 
         for u, v, d in self.graph.graph.edges(data=True):
-            if d['timeslot'] <= timeslot and u == node_name:
-                edges_before_timeslot.append((u, v, d['timeslot']))
+            if d.get('timeslot', -1) <= timeslot and u == node_name:
+                edges_before_timeslot.append((u, v, d.get('timeslot', -1)))
 
         if not edges_before_timeslot:
-            return vectors.vectors.get(node_name, [0])
+            return vectors.vectors.get(node_name, [0, 0, 0])
 
         latest_edge = max(edges_before_timeslot, key=lambda edge: edge[2])
         latest_timeslot = latest_edge[2]
 
         if self.vector_timeline[latest_timeslot].get(node_name, 0):
             return self.vector_timeline[latest_timeslot][node_name]
-        return vectors.vectors.get(node_name, [0])
+        return vectors.vectors.get(node_name, [0, 0, 0])
 
     def fill_empty_spaces_in_vector_timeline(self):
-        timeslots = sorted(self.vector_timeline.items(), key=lambda x: x[0])
+        timeslots = sorted(self.vector_timeline.items(), key=lambda x: int(x[0]))
 
         for i in range(1, len(timeslots)):
-            previous_timeslot = timeslots[i-1][0]
+            previous_timeslot = timeslots[i - 1][0]
             current_timeslot = timeslots[i][0]
             values_from_previous_timeslot = self.vector_timeline[previous_timeslot]
             for key, value in values_from_previous_timeslot.items():
@@ -187,11 +183,36 @@ class Game:
                     self.vector_timeline[current_timeslot][key] = value
 
     def build_edge_frequency(self):
-        for u, v, d in self.graph.graph.edges(data=True):
-            edge = (u, v)
+        for node_1, node_2, timeslot in self.graph.sorted_edges:
+            edge = (node_1, node_2)
             if edge not in self.edge_frequency:
-                self.edge_frequency[edge] = (-5, 0)
+                self.edge_frequency[edge] = (-1, 0)
             last_seen_timeslot, frequency = self.edge_frequency[edge]
-            if d['timeslot'] > last_seen_timeslot:
-                d['timeslot'] = last_seen_timeslot
-            self.edge_frequency[(u, v)] = (d['timeslot'], frequency+1)
+            if timeslot < last_seen_timeslot:
+                timeslot = last_seen_timeslot
+            self.edge_frequency[(node_1, node_2)] = (timeslot, frequency + 1)
+
+    def find_timestamp(self, last_seen):
+        all_timestamps_string = list(self.vector_timeline.keys())
+        all_timestamps = [int(t) for t in all_timestamps_string]
+        all_timestamps = sorted(all_timestamps)
+        entities_interact = random.choice([0, 1])
+        index_of_last_seen = all_timestamps.index(last_seen)
+
+        timestamps_before = all_timestamps[:index_of_last_seen]
+        timestamps_after = all_timestamps[index_of_last_seen:]
+
+        timestamps_to_sample = timestamps_before
+        if not entities_interact:
+            timestamps_to_sample = timestamps_after
+
+        if len(timestamps_to_sample) == 0:
+            if len(timestamps_before) == 0:
+                timestamps_to_sample = timestamps_after
+                entities_interact = 0
+            if len(timestamps_after) == 0:
+                timestamps_to_sample = timestamps_before
+                entities_interact = 1
+
+        random_sampled_timestamp = random.choice(timestamps_to_sample)
+        return random_sampled_timestamp, entities_interact

@@ -1,7 +1,7 @@
 {
     "classifier_game_ids_filename": "game_ids/node2vec_trial_classifier.gameid",
     "vector_game_ids_filename": "game_ids/vector.gameid",
-    "samples_per_game": 100,
+    "samples_per_game": 500,
     "vector_tag": "final_trial",
     "training_sample_filename": "sample.json",
     "node2vec_training_edges_filename": "node2vec.edges",

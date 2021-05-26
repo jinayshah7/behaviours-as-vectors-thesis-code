@@ -17,14 +17,14 @@ class ClassifierTrainer:
 
     def generate_result(self):
         self.load_samples()
-        self.format_samples()
         random_seed = self.experiment.variables["random_seed"]
 
-        # put some hyper-parameter tuning code here
-        clf = LogisticRegression(random_state=random_seed).fit(self.vectors,
-                                                               self.target_variable)
-        clf.score(self.vectors,
-                  self.target_variable)
+        ninety_percent = int(len(self.vectors) * 0.9)
+
+        clf = LogisticRegression(random_state=random_seed).fit(self.vectors[:ninety_percent],
+                                                               self.target_variable[:ninety_percent])
+        print(clf.score(self.vectors[ninety_percent:],
+                        self.target_variable[ninety_percent:]))
         self.save_samples()
 
     def load_samples(self):
