@@ -59,7 +59,7 @@ class Game:
         self.build_edge_frequency()
 
         number_of_samples = self.experiment.variables['samples_per_game']
-        random.seed(self.experiment.variables["random_seed"])
+        random.seed(self.experiment.variables["random_seed_2"])
 
         for i in range(number_of_samples):
             try:

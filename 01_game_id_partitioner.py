@@ -41,7 +41,7 @@ def main():
 
         game_ids = get_all_game_ids(ALL_GAME_IDS_FILE)
 
-        random_seed = experiment.variables["random_seed"]
+        random_seed = experiment.variables["random_seed_1"]
         random.seed(random_seed)
         random.shuffle(game_ids)
 
