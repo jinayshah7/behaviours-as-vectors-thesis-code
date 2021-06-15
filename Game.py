@@ -23,6 +23,7 @@ class Game:
         self.vector_relation_method = None
         self.reserved_for_vector_training = False
         self.edge_frequency = {}
+        self.edge_frequency_category_wise = {}
 
         self.json_filename = f'{self.GAME_JSON_DIRECTORY}/{self.id}.json'
         self.vector_timeline_filename = f'{self.VECTOR_TIMELINE_DIRECTORY}/{self.experiment.variables["vector_tag"]}_{self.id}.vtime '
@@ -53,23 +54,16 @@ class Game:
 
         return condition_1 and condition_3
 
-    def get_training_samples(self, vectors):
+    def get_training_samples(self, vectors, categories_to_include):
         self.build_vector_timeline(vectors)
-        self.training_samples = []
+        self.training_samples = {}
         self.build_edge_frequency()
 
         number_of_samples = self.experiment.variables['samples_per_game']
         random.seed(self.experiment.variables["random_seed_2"])
 
-        for i in range(number_of_samples):
-            try:
-                entity_1, entity_2, answer = self.sample_vector_timeline()
-            except:
-                continue
-
-            sample = entity_1[1] + entity_2[1] + answer
-
-            self.training_samples.append(sample)
+        for category in categories_to_include:
+            self.training_samples[category] = self.generate_samples_for_category(category, number_of_samples)
 
         return self.training_samples
 
@@ -85,7 +79,13 @@ class Game:
         if self.vector_timeline_already_exists():
             with open(self.vector_timeline_filename) as f:
                 self.vector_timeline = json.load(f)
-
+                try:
+                    self.download_json()
+                except:
+                    pass
+                self.build_graph()
+                self.graph.build_sorted_edges()
+                return
         try:
             self.download_json()
         except:
@@ -105,16 +105,6 @@ class Game:
         with open(self.vector_timeline_filename, 'w') as f:
             json.dump(self.vector_timeline, f)
 
-    def if_entities_interact_after_timestamp(self, entity_1, entity_2, timeslot):
-        edges_after_timeslot = []
-        for u, v, d in self.graph.graph.edges(data=True):
-            if d['timeslot'] > timeslot[0] and u == entity_1[0] and v == entity_2[0]:
-                edges_after_timeslot.append((u, v, d['timeslot']))
-
-        if len(edges_after_timeslot) == 0:
-            return [0]
-        return [1]
-
     @staticmethod
     def _relate_vectors(vector_1, vector_2):
         resultant_vector = []
@@ -122,11 +112,11 @@ class Game:
             resultant_vector.append(n1 + n2)
         return resultant_vector
 
-    def sample_vector_timeline(self):
+    def sample_vector_timeline(self, specific_category):
+        
+        random_entity_1, random_entity_2 = self.get_two_random_entities(specific_category)
 
-        random_entity_1, random_entity_2 = random.choice(list(self.edge_frequency.keys()))
-
-        last_seen, _ = self.edge_frequency[(random_entity_1, random_entity_2)]
+        last_seen, count, category = self.edge_frequency[(random_entity_1, random_entity_2)]
         random_timestamp, answer = self.find_timestamp(last_seen)
 
         random_entity_vector_1 = self.vector_timeline[random_timestamp][random_entity_1]
@@ -183,14 +173,21 @@ class Game:
                     self.vector_timeline[current_timeslot][key] = value
 
     def build_edge_frequency(self):
-        for node_1, node_2, timeslot in self.graph.sorted_edges:
+        for node_1, node_2, timeslot, category in self.graph.sorted_edges:
             edge = (node_1, node_2)
             if edge not in self.edge_frequency:
-                self.edge_frequency[edge] = (-1, 0)
-            last_seen_timeslot, frequency = self.edge_frequency[edge]
+                self.edge_frequency[edge] = (-1, 0, category)
+            last_seen_timeslot, frequency, category = self.edge_frequency[edge]
             if timeslot < last_seen_timeslot:
                 timeslot = last_seen_timeslot
-            self.edge_frequency[(node_1, node_2)] = (timeslot, frequency + 1)
+            self.edge_frequency[(node_1, node_2)] = (timeslot, frequency + 1, category)
+
+        for key, value in self.edge_frequency.items():
+            node_1, node_2 = key
+            timeslot, frequency, category = value
+            if category not in self.edge_frequency_category_wise:
+                self.edge_frequency_category_wise[category] = {}
+            self.edge_frequency_category_wise[category][(node_1, node_2)] = (timeslot, frequency)
 
     def find_timestamp(self, last_seen):
         all_timestamps_string = list(self.vector_timeline.keys())
@@ -216,3 +213,20 @@ class Game:
 
         random_sampled_timestamp = random.choice(timestamps_to_sample)
         return random_sampled_timestamp, entities_interact
+
+    def get_two_random_entities(self, specific_category):
+        interactions_to_choose_from = list(self.edge_frequency_category_wise[specific_category].keys())
+        random_entity_1, random_entity_2 = random.choice(interactions_to_choose_from)
+        return random_entity_1, random_entity_2
+
+    def generate_samples_for_category(self, category, number_of_samples):
+        samples = []
+        for i in range(number_of_samples):
+            try:
+                entity_1, entity_2, answer = self.sample_vector_timeline(category)
+            except Exception as e:
+                continue
+            sample = entity_1[1] + entity_2[1] + answer
+            samples.append(sample)
+
+        return samples

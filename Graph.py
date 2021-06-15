@@ -21,6 +21,9 @@ class Graph:
         self.json = json_data
         if self.already_exists():
             self.load_graph_from_file()
+            self.build_timeslots()
+            self.get_hero_ids()
+            return
 
         self.build_timeslots()
         self.get_hero_ids()
@@ -56,13 +59,13 @@ class Graph:
 
         for thing in things_to_include_from_teamfights:
             list_of_edges_from_thing = list(player[thing].keys())
-            self.add_edges_to_graph(hero_id, list_of_edges_from_thing, timeslot)
+            self.add_edges_to_graph(hero_id, list_of_edges_from_thing, timeslot, thing)
 
-    def parse_player_items(self, items, hero_id):
+    def parse_player_items(self, items, hero_id, category_name):
         for item in items:
             timeslot = self.get_timeslot(item["time"])
             item_name = item["key"]
-            self.add_edge_to_graph(hero_id, item_name, timeslot)
+            self.add_edge_to_graph(hero_id, item_name, timeslot, category_name)
 
     def parse_player_summary(self):
         for player_number, player in enumerate(self.json["players"]):
@@ -71,8 +74,8 @@ class Graph:
             things_to_include_from_player_summary = self.experiment.variables["things_to_include_from_player_summary"]
 
             for thing in things_to_include_from_player_summary:
-                thing = player[thing]
-                self.parse_player_items(thing, hero_id)
+                thing_value = player[thing]
+                self.parse_player_items(thing_value, hero_id, thing)
 
     def get_timeslot(self, timestamp):
         for i in range(len(self.timeslots)-1):
@@ -83,12 +86,12 @@ class Graph:
                 return i + 1
         return 0
 
-    def add_edges_to_graph(self, hero_id, items, timeslot):
+    def add_edges_to_graph(self, hero_id, items, timeslot, category_name):
         for item in items:
-            self.add_edge_to_graph(hero_id, item, timeslot)
+            self.add_edge_to_graph(hero_id, item, timeslot, category_name)
 
-    def add_edge_to_graph(self, node_1, node_2, timeslot):
-        self.graph.add_edge(node_1, node_2, timeslot=timeslot)
+    def add_edge_to_graph(self, node_1, node_2, timeslot, category_name):
+        self.graph.add_edge(node_1, node_2, timeslot=timeslot, category_name=category_name)
 
     def get_hero_ids(self):
         hero_ids = [player["hero_id"] for player in self.json["players"]]
@@ -103,12 +106,16 @@ class Graph:
             if 'timeslot' not in edge[2]:
                 continue
             else:
-                self.sorted_edges.append((edge[0], edge[1], edge[2]['timeslot']))
+                self.sorted_edges.append((edge[0],
+                                          edge[1],
+                                          edge[2]['timeslot'],
+                                          edge[2]['category_name']))
 
         self.sorted_edges = list(set(self.sorted_edges))
         self.sorted_edges = sorted(self.sorted_edges, key=lambda edge: edge[2])
 
     def save_graph(self):
         self.build_sorted_edges()
+        edges = [edge for edge in self.graph.edges(data=True)]
         with open(self.graph_filename, 'w') as f:
-            json.dump(self.sorted_edges, f)
+            json.dump(edges, f)

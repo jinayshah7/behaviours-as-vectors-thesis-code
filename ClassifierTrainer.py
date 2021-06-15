@@ -9,11 +9,19 @@ class ClassifierTrainer:
 
     def __init__(self, experiment):
         self.experiment = experiment
-        self.vectors = None
-        self.target_variable = None
+        self.vectors = {}
+        self.target_variable = {}
         self.loaded_samples = None
         self.vector_size = 0
-        self.sample_filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{self.experiment.variables["training_sample_filename"]}'
+
+        self.things_to_include_from_teamfights = self.experiment.variables["things_to_include_from_teamfights"]
+        self.things_to_include_from_player_summary = self.experiment.variables["things_to_include_from_player_summary"]
+        self.things_to_include = self.things_to_include_from_player_summary + self.things_to_include_from_teamfights
+
+        self.sample_filenames = {}
+        for thing in self.things_to_include:
+            filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{thing}_{self.experiment.variables["training_sample_filename"]}'
+            self.sample_filenames[thing] = filename
 
     def generate_result(self):
         self.load_samples()
@@ -28,14 +36,15 @@ class ClassifierTrainer:
         self.save_samples()
 
     def load_samples(self):
-        with open(self.sample_filename) as f:
-            rows = json.load(f)
+        for thing, filename in self.sample_filenames:
+            with open(filename) as f:
+                rows = json.load(f)
 
-        number_of_rows = len(rows[0])
-        self.vector_size = int((number_of_rows - 1) / 2)
+            number_of_rows = len(rows[0])
+            self.vector_size = int((number_of_rows - 1) / 2)
 
-        self.target_variable = array([row[-1] for row in rows])
-        self.vectors = array([row[:-1] for row in rows])
+            self.target_variable[thing] = array([row[-1] for row in rows])
+            self.vectors[thing] = array([row[:-1] for row in rows])
 
     def save_samples(self):
         pass
