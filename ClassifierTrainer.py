@@ -25,18 +25,19 @@ class ClassifierTrainer:
 
     def generate_result(self):
         self.load_samples()
-        random_seed = self.experiment.variables["random_seed"]
+        random_seed = self.experiment.variables["random_seed_2"]
+        print(f"Experiment: ")
+        for thing in self.things_to_include:
+            ninety_percent = int(len(self.vectors[thing]) * 0.9)
 
-        ninety_percent = int(len(self.vectors) * 0.9)
-
-        clf = LogisticRegression(random_state=random_seed).fit(self.vectors[:ninety_percent],
-                                                               self.target_variable[:ninety_percent])
-        print(clf.score(self.vectors[ninety_percent:],
-                        self.target_variable[ninety_percent:]))
-        self.save_samples()
+            clf = LogisticRegression(random_state=random_seed).fit(self.vectors[thing][:ninety_percent],
+                                                                   self.target_variable[thing][:ninety_percent])
+            print(thing, ": ", clf.score(self.vectors[thing][ninety_percent:],
+                            self.target_variable[thing][ninety_percent:]))
+            self.save_samples()
 
     def load_samples(self):
-        for thing, filename in self.sample_filenames:
+        for thing, filename in self.sample_filenames.items():
             with open(filename) as f:
                 rows = json.load(f)
 

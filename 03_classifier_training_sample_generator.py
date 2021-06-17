@@ -24,11 +24,11 @@ def main():
         if experiment.already_done():
             continue
 
-        vectors = Vectors(experiment)
-
-        sample_generator = TrainingSampleGenerator(experiment, vectors)
+        # vectors = Vectors(experiment)
+        #
+        # sample_generator = TrainingSampleGenerator(experiment, vectors)
         sample_generator.generate_samples()
-        sample_generator.save_samples()
+        # sample_generator.save_samples()
 
         classifier = ClassifierTrainer(experiment)
         classifier.generate_result()
