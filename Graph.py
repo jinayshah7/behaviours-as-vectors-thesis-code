@@ -19,11 +19,11 @@ class Graph:
 
     def build(self, json_data):
         self.json = json_data
-        if self.already_exists():
-            self.load_graph_from_file()
-            self.build_timeslots()
-            self.get_hero_ids()
-            return
+        # if self.already_exists():
+        #     self.load_graph_from_file()
+        #     self.build_timeslots()
+        #     self.get_hero_ids()
+        #     return
 
         self.build_timeslots()
         self.get_hero_ids()

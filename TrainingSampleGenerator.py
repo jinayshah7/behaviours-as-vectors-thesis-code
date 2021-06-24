@@ -11,7 +11,7 @@ class TrainingSampleGenerator:
 
     def __init__(self, experiment, vectors):
         self.experiment = experiment
-        self.game_ids_filename = self.experiment.variables["classifier_game_ids_filename"]
+        self.game_ids_filename = "game_ids/" + experiment.variables["vector_tag"] + "_classifier.gameid"
         self.samples_per_game = self.experiment.variables["samples_per_game"]
         self.samples = []
         self.game_ids = []
@@ -40,7 +40,7 @@ class TrainingSampleGenerator:
 
     def generate_samples(self):
         self.load_game_ids()
-        for game_id in tqdm(self.game_ids[:50]):
+        for game_id in tqdm(self.game_ids[:]):
             game = Game(game_id, self.experiment)
             samples_from_this_game = game.get_training_samples(self.vectors, self.things_to_include)
             for category, samples in samples_from_this_game.items():
@@ -52,6 +52,9 @@ class TrainingSampleGenerator:
         for thing, filename in self.sample_filenames.items():
             with open(filename, 'w') as f:
                 json.dump(self.separate_samples[thing], f)
+        all_filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_all_{self.experiment.variables["training_sample_filename"]}'
+        with open(all_filename, 'w') as f:
+            json.dump(self.samples, f)
 
     def generate_sample_filenames(self):
         for thing in self.things_to_include:

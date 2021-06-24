@@ -1,5 +1,5 @@
 import json
-
+import numpy as np
 from numpy import array
 from sklearn.linear_model import LogisticRegression
 
@@ -9,14 +9,19 @@ class ClassifierTrainer:
 
     def __init__(self, experiment):
         self.experiment = experiment
-        self.vectors = {}
-        self.target_variable = {}
+        self.vectors = {
+
+        }
+        self.target_variable = {
+
+        }
         self.loaded_samples = None
         self.vector_size = 0
 
         self.things_to_include_from_teamfights = self.experiment.variables["things_to_include_from_teamfights"]
         self.things_to_include_from_player_summary = self.experiment.variables["things_to_include_from_player_summary"]
         self.things_to_include = self.things_to_include_from_player_summary + self.things_to_include_from_teamfights
+        self.things_to_include.append("all")
 
         self.sample_filenames = {}
         for thing in self.things_to_include:
@@ -33,7 +38,7 @@ class ClassifierTrainer:
             clf = LogisticRegression(random_state=random_seed).fit(self.vectors[thing][:ninety_percent],
                                                                    self.target_variable[thing][:ninety_percent])
             print(thing, ": ", clf.score(self.vectors[thing][ninety_percent:],
-                            self.target_variable[thing][ninety_percent:]))
+                                         self.target_variable[thing][ninety_percent:]))
             self.save_samples()
 
     def load_samples(self):
@@ -44,8 +49,17 @@ class ClassifierTrainer:
             number_of_rows = len(rows[0])
             self.vector_size = int((number_of_rows - 1) / 2)
 
-            self.target_variable[thing] = array([row[-1] for row in rows])
-            self.vectors[thing] = array([row[:-1] for row in rows])
+            vectors = []
+            target_variables = []
+            for row in rows:
+                if (len(row) - 1) != (2*self.vector_size):
+                    continue
+                vectors.append(row[:-1])
+                target_variables.append(row[-1])
+            # self.target_variable[thing] = array([row[-1] for row in rows])
+            # self.vectors[thing] = [row[:-1] for row in rows]
+            self.target_variable[thing] = array(target_variables)
+            self.vectors[thing] = array(vectors)
 
     def save_samples(self):
         pass

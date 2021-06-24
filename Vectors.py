@@ -5,7 +5,6 @@ import numpy as np
 
 class Vectors:
     VECTOR_DIRECTORY = "initial_vectors"
-    EDGE_NAMES_FILENAME = f"vector_training_samples/trial4_edge_names.json"
 
     def __init__(self, experiment):
         self.experiment = experiment
@@ -13,6 +12,7 @@ class Vectors:
         self.edge_names = {}
         self.tag = self.experiment.variables["vector_tag"]
         self.vector_filename = f"{self.VECTOR_DIRECTORY}/{self.tag}.vector"
+        self.edge_names_filename = f"vector_training_samples/{self.tag}_edge_id_names.json"
         self.load()
         self.error = 0
 
@@ -42,5 +42,5 @@ class Vectors:
         return name, vector
 
     def build_entity_id_name_table(self):
-        with open(self.EDGE_NAMES_FILENAME) as f:
+        with open(self.edge_names_filename) as f:
             self.edge_names = json.load(f)

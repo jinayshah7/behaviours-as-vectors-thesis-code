@@ -35,16 +35,17 @@ class Game:
             self.graph.build(self.json)
 
     def download_json(self):
-        if self.json_already_exists():
-            with open(self.json_filename, 'r') as f:
-                self.json = json.load(f)
-            return
+        try:
+            if self.json_already_exists():
+                with open(self.json_filename, 'r') as f:
+                    self.json = json.load(f)
+                return
+        except Exception as e:
+            self.json = r.get(self.url).json()
 
-        self.json = r.get(self.url).json()
-
-        if self.json_is_valid():
-            with open(self.json_filename, 'w') as f:
-                json.dump(self.json, f)
+            if self.json_is_valid():
+                with open(self.json_filename, 'w') as f:
+                    json.dump(self.json, f)
 
     def json_is_valid(self):
         condition_1 = "teamfights" in self.json

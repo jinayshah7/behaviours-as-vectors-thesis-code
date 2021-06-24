@@ -45,7 +45,7 @@ class VectorTrainingSampleGenerator:
 
     def generate_big_graph(self):
         self.load_game_ids()
-        for game_id in tqdm(self.game_ids[:5]):
+        for game_id in tqdm(self.game_ids[:]):
             game = Game(game_id, self.experiment)
             game.download_json()
             game.build_graph()

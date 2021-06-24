@@ -2,14 +2,7 @@ from Experiment import Experiment
 from VectorTrainingSampleGenerator import VectorTrainingSampleGenerator
 
 EXPERIMENTS = [
-    # "node2vec_variation_1",
-    # "node2vec_variation_2",
-    # "tgn_variation_1",
-    # "tgn_variation_2",
-    # "tgn_variation_3",
-    # "tgn_variation_4",
-    # "line",
-    "trial4"
+    "4D"
 ]
 
 
