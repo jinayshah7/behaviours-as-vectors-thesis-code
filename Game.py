@@ -6,7 +6,7 @@ import requests as r
 from tqdm import tqdm
 
 from Graph import Graph
-from secrets import API_KEY, API_URL
+# from secrets import API_KEY, API_URL
 
 
 class Game:
