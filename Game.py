@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from Graph import Graph
 # from secrets import API_KEY, API_URL
-
+API_KEY, API_URL = "", ""
 
 class Game:
     GAME_JSON_DIRECTORY = "game_json_files"
@@ -96,7 +96,7 @@ class Game:
         self.graph.build_sorted_edges()
         self.vector_timeline[-1] = vectors.vectors
 
-        print("Processing edges...")
+        print("\nProcessing edges...")
 
         for edge in tqdm(self.graph.sorted_edges):
             self.update_vector_timeline(edge, vectors)
