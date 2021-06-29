@@ -1,5 +1,4 @@
 import json
-import numpy as np
 from numpy import array
 from sklearn.linear_model import LogisticRegression
 
@@ -9,14 +8,11 @@ class ClassifierTrainer:
 
     def __init__(self, experiment):
         self.experiment = experiment
-        self.vectors = {
-
-        }
-        self.target_variable = {
-
-        }
+        self.vectors = {}
+        self.target_variable = {}
         self.loaded_samples = None
         self.vector_size = 0
+        self.results = {}
 
         self.things_to_include_from_teamfights = self.experiment.variables["things_to_include_from_teamfights"]
         self.things_to_include_from_player_summary = self.experiment.variables["things_to_include_from_player_summary"]
@@ -35,11 +31,23 @@ class ClassifierTrainer:
         for thing in self.things_to_include:
             ninety_percent = int(len(self.vectors[thing]) * 0.9)
 
-            clf = LogisticRegression(random_state=random_seed).fit(self.vectors[thing][:ninety_percent],
-                                                                   self.target_variable[thing][:ninety_percent])
-            print(thing, ": ", clf.score(self.vectors[thing][ninety_percent:],
-                                         self.target_variable[thing][ninety_percent:]))
-            self.save_samples()
+            train_vectors = self.vectors[thing][:ninety_percent]
+            test_vectors = self.vectors[thing][ninety_percent:]
+
+            train_target = self.target_variable[thing][:ninety_percent]
+            test_target = self.target_variable[thing][ninety_percent:]
+
+            clf = LogisticRegression(random_state=random_seed)
+            clf.fit(train_vectors, train_target)
+
+            train_score = clf.score(train_vectors, train_target)
+            test_score = clf.score(test_vectors, test_target)
+
+            self.results[f"{thing}_train_score"] = train_score
+            self.results[f"{thing}_test_score"] = test_score
+
+            print(f"{thing} train score: {train_score}")
+            print(f"{thing} test score: {test_score}")
 
     def load_samples(self):
         for thing, filename in self.sample_filenames.items():
@@ -52,14 +60,12 @@ class ClassifierTrainer:
             vectors = []
             target_variables = []
             for row in rows:
-                if (len(row) - 1) != (2*self.vector_size):
+                if (len(row) - 1) != (2 * self.vector_size):
                     continue
                 vectors.append(row[:-1])
                 target_variables.append(row[-1])
-            # self.target_variable[thing] = array([row[-1] for row in rows])
-            # self.vectors[thing] = [row[:-1] for row in rows]
             self.target_variable[thing] = array(target_variables)
             self.vectors[thing] = array(vectors)
 
-    def save_samples(self):
-        pass
+    def save_result(self):
+        self.experiment.add("results", self.results)

@@ -21,5 +21,15 @@ class Experiment:
             return True
 
     def already_done(self):
-        # check if all the relevant files exist
+        if "results" in self.variables:
+            return True
         return False
+
+    def add(self, name, value):
+        self.variables[name] = value
+        self.save()
+        self.load()
+
+    def save(self):
+        with open(self.experiment_filename, 'w') as f:
+            json.dump(self.variables, f)

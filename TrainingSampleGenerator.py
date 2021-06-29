@@ -41,22 +41,16 @@ class TrainingSampleGenerator:
 
     def generate_samples(self):
         self.load_game_ids()
-        with Pool(4) as p:
-            print(p.map(self.collect_samples_from_game, self.game_ids))
-        # for game_id in tqdm(self.game_ids):
-        #     self.collect_samples_from_game(game_id)
-            # game = Game(game_id, self.experiment)
-            # samples_from_this_game = game.get_training_samples(self.vectors, self.things_to_include)
-            # for category, samples in samples_from_this_game.items():
-            #     self.samples.extend(samples)
-            #     self.separate_samples[category].extend(samples)
+        with Pool(5) as p:
+            total_samples = p.map(self.collect_samples_from_game, self.game_ids)
+        self.combine_samples_from_multiprocess(total_samples)
 
     def collect_samples_from_game(self, game_id):
+        print(f"Sampling from game: {game_id}")
         game = Game(game_id, self.experiment)
         samples_from_this_game = game.get_training_samples(self.vectors, self.things_to_include)
-        for category, samples in samples_from_this_game.items():
-            self.samples.extend(samples)
-            self.separate_samples[category].extend(samples)
+        print(f"Collected samples from game: {game_id}")
+        return samples_from_this_game
 
     def save_samples(self):
         for thing, filename in self.sample_filenames.items():
@@ -70,3 +64,9 @@ class TrainingSampleGenerator:
         for thing in self.things_to_include:
             filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{thing}_{self.experiment.variables["training_sample_filename"]}'
             self.sample_filenames[thing] = filename
+
+    def combine_samples_from_multiprocess(self, total_samples):
+        for dict_of_samples in total_samples:
+            for category, samples in dict_of_samples.items():
+                self.samples.extend(samples)
+                self.separate_samples[category].extend(samples)

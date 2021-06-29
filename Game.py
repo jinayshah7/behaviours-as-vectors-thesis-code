@@ -120,8 +120,8 @@ class Game:
         last_seen, count, category = self.edge_frequency[(random_entity_1, random_entity_2)]
         random_timestamp, answer = self.find_timestamp(last_seen)
 
-        random_entity_vector_1 = self.vector_timeline[random_timestamp][random_entity_1]
-        random_entity_vector_2 = self.vector_timeline[random_timestamp][random_entity_2]
+        random_entity_vector_1 = self.vector_timeline[random_timestamp][str(random_entity_1)]
+        random_entity_vector_2 = self.vector_timeline[random_timestamp][str(random_entity_2)]
 
         return (random_entity_1, random_entity_vector_1), \
                (random_entity_2, random_entity_vector_2), \
@@ -213,7 +213,7 @@ class Game:
                 entities_interact = 1
 
         random_sampled_timestamp = random.choice(timestamps_to_sample)
-        return random_sampled_timestamp, entities_interact
+        return str(random_sampled_timestamp), entities_interact
 
     def get_two_random_entities(self, specific_category):
         interactions_to_choose_from = list(self.edge_frequency_category_wise[specific_category].keys())

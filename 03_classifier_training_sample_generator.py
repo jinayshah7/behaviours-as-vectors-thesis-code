@@ -8,9 +8,9 @@ EXPERIMENTS = [
     # "4D2",
     # "8D",
     # "16D"
-    # "128D",
+    "128D"
     # "256D",
-    "512D"
+    # "512D"
 ]
 
 
@@ -23,13 +23,14 @@ def main():
 
         vectors = Vectors(experiment)
 
-        sample_generator = TrainingSampleGenerator(experiment, vectors)
-        sample_generator.generate_samples()
-        sample_generator.save_samples()
+        # sample_generator = TrainingSampleGenerator(experiment, vectors)
+        # sample_generator.generate_samples()
+        # sample_generator.save_samples()
 
         print(experiment.variables["vector_tag"])
         classifier = ClassifierTrainer(experiment)
         classifier.generate_result()
+        classifier.save_result()
 
 
 if __name__ == '__main__':
