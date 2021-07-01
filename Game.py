@@ -77,16 +77,16 @@ class Game:
             return True
 
     def build_vector_timeline(self, vectors):
-        if self.vector_timeline_already_exists():
-            with open(self.vector_timeline_filename) as f:
-                self.vector_timeline = json.load(f)
-                try:
-                    self.download_json()
-                except:
-                    pass
-                self.build_graph()
-                self.graph.build_sorted_edges()
-                return
+        # if self.vector_timeline_already_exists():
+        #     with open(self.vector_timeline_filename) as f:
+        #         self.vector_timeline = json.load(f)
+        #         try:
+        #             self.download_json()
+        #         except:
+        #             pass
+        #         self.build_graph()
+        #         self.graph.build_sorted_edges()
+        #         return
         try:
             self.download_json()
         except:
@@ -120,8 +120,8 @@ class Game:
         last_seen, count, category = self.edge_frequency[(random_entity_1, random_entity_2)]
         random_timestamp, answer = self.find_timestamp(last_seen)
 
-        random_entity_vector_1 = self.vector_timeline[random_timestamp][str(random_entity_1)]
-        random_entity_vector_2 = self.vector_timeline[random_timestamp][str(random_entity_2)]
+        random_entity_vector_1 = self.vector_timeline[random_timestamp][random_entity_1]
+        random_entity_vector_2 = self.vector_timeline[random_timestamp][random_entity_2]
 
         return (random_entity_1, random_entity_vector_1), \
                (random_entity_2, random_entity_vector_2), \
@@ -213,7 +213,7 @@ class Game:
                 entities_interact = 1
 
         random_sampled_timestamp = random.choice(timestamps_to_sample)
-        return str(random_sampled_timestamp), entities_interact
+        return int(random_sampled_timestamp), entities_interact
 
     def get_two_random_entities(self, specific_category):
         interactions_to_choose_from = list(self.edge_frequency_category_wise[specific_category].keys())
