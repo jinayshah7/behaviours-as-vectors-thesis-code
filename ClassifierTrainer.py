@@ -48,6 +48,7 @@ class ClassifierTrainer:
 
             print(f"{thing} train score: {train_score}")
             print(f"{thing} test score: {test_score}")
+            self.save_result()
 
     def load_samples(self):
         for thing, filename in self.sample_filenames.items():
