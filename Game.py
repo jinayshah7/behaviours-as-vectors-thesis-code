@@ -103,8 +103,8 @@ class Game:
 
         self.fill_empty_spaces_in_vector_timeline()
 
-        with open(self.vector_timeline_filename, 'w') as f:
-            json.dump(self.vector_timeline, f)
+        # with open(self.vector_timeline_filename, 'w') as f:
+        #     json.dump(self.vector_timeline, f)
 
     @staticmethod
     def _relate_vectors(vector_1, vector_2):
