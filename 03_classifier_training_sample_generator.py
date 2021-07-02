@@ -18,8 +18,8 @@ def main():
     for experiment_name in EXPERIMENTS:
         experiment = Experiment(experiment_name)
 
-        if experiment.already_done():
-            continue
+        # if experiment.already_done():
+        #     continue
 
         vectors = Vectors(experiment)
 
