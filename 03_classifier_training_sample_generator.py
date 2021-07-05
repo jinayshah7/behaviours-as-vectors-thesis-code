@@ -2,11 +2,11 @@ from Experiment import Experiment
 from Vectors import Vectors
 from TrainingSampleGenerator import TrainingSampleGenerator
 from ClassifierTrainer import ClassifierTrainer
-from Experiments import EXPERIMENTS
+from list_of_experiments import LIST_OF_EXPERIMENTS
 
 
 def main():
-    for experiment_name in EXPERIMENTS:
+    for experiment_name in LIST_OF_EXPERIMENTS:
         experiment = Experiment(experiment_name)
 
         # if experiment.already_done():

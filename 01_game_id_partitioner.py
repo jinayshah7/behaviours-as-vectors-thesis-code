@@ -1,6 +1,6 @@
 import json
 import random
-from Experiments import EXPERIMENTS
+from list_of_experiments import LIST_OF_EXPERIMENTS
 from Experiment import Experiment
 
 ALL_GAME_IDS_FILE = "game_ids/all.gameid"
@@ -22,7 +22,7 @@ def save_game_ids(game_ids, filename):
 
 
 def main():
-    for experiment_name in EXPERIMENTS:
+    for experiment_name in LIST_OF_EXPERIMENTS:
         experiment = Experiment(experiment_name)
 
         if experiment.already_done():

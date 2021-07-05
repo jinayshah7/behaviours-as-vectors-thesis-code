@@ -1,4 +1,4 @@
-EXPERIMENTS = [
+LIST_OF_EXPERIMENTS = [
     "dimension_line_128",
     "dimension_line_16",
     "dimension_line_256",
