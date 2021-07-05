@@ -1,14 +1,10 @@
 import json
 import random
-
+from Experiments import EXPERIMENTS
 from Experiment import Experiment
 
 ALL_GAME_IDS_FILE = "game_ids/all.gameid"
 GAME_ID_FOLDER = "game_ids/"
-
-EXPERIMENTS = [
-    "4D"
-]
 
 
 def get_all_game_ids(filename):
@@ -32,7 +28,9 @@ def main():
         if experiment.already_done():
             continue
 
+        number_of_games = experiment.variables["number_of_games"]
         game_ids = get_all_game_ids(ALL_GAME_IDS_FILE)
+        game_ids = game_ids[:number_of_games]
 
         random_seed = experiment.variables["random_seed_1"]
         random.seed(random_seed)

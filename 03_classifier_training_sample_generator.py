@@ -2,16 +2,7 @@ from Experiment import Experiment
 from Vectors import Vectors
 from TrainingSampleGenerator import TrainingSampleGenerator
 from ClassifierTrainer import ClassifierTrainer
-
-EXPERIMENTS = [
-    # "4D",
-    # "4D2",
-    # "8D",
-    # "16D"
-    # "128D"
-    # "256D",
-    "512D"
-]
+from Experiments import EXPERIMENTS
 
 
 def main():

@@ -1,9 +1,6 @@
 from Experiment import Experiment
 from VectorTrainingSampleGenerator import VectorTrainingSampleGenerator
-
-EXPERIMENTS = [
-    "4D"
-]
+from Experiments import EXPERIMENTS
 
 
 def main():
