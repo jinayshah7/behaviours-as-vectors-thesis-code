@@ -5,11 +5,10 @@ from list_of_experiments import LIST_OF_EXPERIMENTS
 
 def main():
 
-    for experiment_name in LIST_OF_EXPERIMENTS:
-        experiment = Experiment(experiment_name)
+    for experiment_number, experiment_name in enumerate(LIST_OF_EXPERIMENTS):
 
-        if experiment.already_done():
-            continue
+        print(f"Completed - {experiment_number}/{len(LIST_OF_EXPERIMENTS)} - Current: {experiment_name}")
+        experiment = Experiment(experiment_name)
 
         ve = VectorTrainingSampleGenerator(experiment)
         ve.generate_big_graph()

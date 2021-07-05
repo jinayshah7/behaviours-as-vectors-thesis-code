@@ -6,8 +6,8 @@ import requests as r
 from tqdm import tqdm
 
 from Graph import Graph
-# from secrets import API_KEY, API_URL
-API_KEY, API_URL = "", ""
+from secrets import API_KEY, API_URL
+# API_KEY, API_URL = "", ""
 
 class Game:
     GAME_JSON_DIRECTORY = "game_json_files"
