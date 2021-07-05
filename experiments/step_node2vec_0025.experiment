@@ -18,5 +18,5 @@
   ],
   "training_sample_filename": "sample.json",
   "vector_addition_constant": 0.0025,
-  "vector_tag": "dimension_node2vec_16"
+  "vector_tag": "step_node2vec_0025"
 }
