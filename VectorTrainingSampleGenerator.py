@@ -98,6 +98,7 @@ class VectorTrainingSampleGenerator:
             edges = list(set(edges))
             for single_edge in edges:
                 f.write(f"{single_edge[0]} {single_edge[1]}\n")
+                f.write(f"{single_edge[1]} {single_edge[0]}\n")
 
     def save_edge_list(self):
         new_reverse_mapping = {}
