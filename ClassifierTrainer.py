@@ -19,10 +19,6 @@ class ClassifierTrainer:
         self.things_to_include = self.things_to_include_from_player_summary + self.things_to_include_from_teamfights
         self.things_to_include.append("all")
 
-        self.sample_filenames = {}
-        for thing in self.things_to_include:
-            filename = f'{self.SAMPLE_DIRECTORY}/{self.experiment.name}_{thing}_{self.experiment.variables["training_sample_filename"]}'
-            self.sample_filenames[thing] = filename
 
     def generate_result(self):
         random_seed = self.experiment.variables["random_seed_2"]
