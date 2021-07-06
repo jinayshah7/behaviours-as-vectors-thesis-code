@@ -42,7 +42,7 @@ class TrainingSampleGenerator:
     def generate_samples(self):
         self.load_game_ids()
         with Pool(32) as p:
-            total_samples = p.map(self.collect_samples_from_game, self.game_ids)
+            total_samples = p.map(self.collect_samples_from_game, self.game_ids[:5])
         self.combine_samples_from_multiprocess(total_samples)
 
     def collect_samples_from_game(self, game_id):
@@ -70,3 +70,4 @@ class TrainingSampleGenerator:
             for category, samples in dict_of_samples.items():
                 self.samples.extend(samples)
                 self.separate_samples[category].extend(samples)
+        self.separate_samples["all"] = self.samples

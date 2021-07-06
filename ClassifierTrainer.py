@@ -25,7 +25,6 @@ class ClassifierTrainer:
             self.sample_filenames[thing] = filename
 
     def generate_result(self):
-        self.load_samples()
         random_seed = self.experiment.variables["random_seed_2"]
         print(f"Experiment: ")
         for thing in self.things_to_include:
@@ -50,10 +49,8 @@ class ClassifierTrainer:
             print(f"{thing} test score: {test_score}")
             self.save_result()
 
-    def load_samples(self):
-        for thing, filename in self.sample_filenames.items():
-            with open(filename) as f:
-                rows = json.load(f)
+    def load_samples(self, sample_generator):
+        for thing, rows in sample_generator.separate_samples.items():
 
             number_of_rows = len(rows[0])
             self.vector_size = int((number_of_rows - 1) / 2)

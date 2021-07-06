@@ -9,17 +9,14 @@ def main():
     for experiment_name in LIST_OF_EXPERIMENTS:
         experiment = Experiment(experiment_name)
 
-        # if experiment.already_done():
-        #     continue
-
         vectors = Vectors(experiment)
 
         sample_generator = TrainingSampleGenerator(experiment, vectors)
         sample_generator.generate_samples()
-        sample_generator.save_samples()
 
         print(experiment.variables["vector_tag"])
         classifier = ClassifierTrainer(experiment)
+        classifier.load_samples(sample_generator)
         classifier.generate_result()
         classifier.save_result()
 
