@@ -19,8 +19,8 @@ def process(experiment_name):
 
 
 def main():
-    with Pool(32) as p:
-        p.map(process, LIST_OF_EXPERIMENTS)
+    with Pool(2) as p:
+        p.map(process, LIST_OF_EXPERIMENTS[:5])
 
 
 if __name__ == '__main__':

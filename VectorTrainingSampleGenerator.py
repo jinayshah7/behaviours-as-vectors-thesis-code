@@ -96,9 +96,16 @@ class VectorTrainingSampleGenerator:
         with open(self.line_training_edges_filename, 'w') as f:
             edges = [(edge[0], edge[1]) for edge in self.edge_list]
             edges = list(set(edges))
+            added_edges = set()
             for single_edge in edges:
+                if (single_edge[0], single_edge[1]) in added_edges:
+                    continue
+                if single_edge[0] == single_edge[1]:
+                    continue
                 f.write(f"{single_edge[0]} {single_edge[1]}\n")
                 f.write(f"{single_edge[1]} {single_edge[0]}\n")
+                added_edges.add((single_edge[0], single_edge[1]))
+                added_edges.add((single_edge[1], single_edge[0]))
 
     def save_edge_list(self):
         new_reverse_mapping = {}
