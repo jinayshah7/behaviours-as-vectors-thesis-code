@@ -31,14 +31,13 @@ class ClassifierTrainer:
         for thing in self.things_to_include:
             clf = make_pipeline(preprocessing.StandardScaler(),
                                 LogisticRegression(random_state=random_seed))
-            cv = KFold(n_splits=10, random_state=random_seed, shuffle=True)
+            cv = KFold(n_splits=10)
 
             scores = cross_val_score(clf,
                                      self.vectors[thing],
                                      self.target_variable[thing],
                                      scoring='accuracy',
-                                     cv=cv,
-                                     n_jobs=-1)
+                                     cv=cv)
 
             print(f'{thing} test score: %.3f (%.3f)' % (mean(scores), std(scores)))
             self.results[f"{thing}_test_scores"] = list(scores)
