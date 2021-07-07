@@ -1,6 +1,12 @@
 import json
+from statistics import mean
+
 from numpy import array
+from numpy.core import std
+from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.pipeline import make_pipeline
 
 
 class ClassifierTrainer:
@@ -19,30 +25,23 @@ class ClassifierTrainer:
         self.things_to_include = self.things_to_include_from_player_summary + self.things_to_include_from_teamfights
         self.things_to_include.append("all")
 
-
     def generate_result(self):
         random_seed = self.experiment.variables["random_seed_2"]
-        print(f"Experiment: ")
+        print(f"Experiment: {self.experiment.variables['vector_tag']}")
         for thing in self.things_to_include:
-            ninety_percent = int(len(self.vectors[thing]) * 0.9)
+            clf = make_pipeline(preprocessing.StandardScaler(),
+                                LogisticRegression(random_state=random_seed))
+            cv = KFold(n_splits=10, random_state=random_seed, shuffle=True)
 
-            train_vectors = self.vectors[thing][:ninety_percent]
-            test_vectors = self.vectors[thing][ninety_percent:]
+            scores = cross_val_score(clf,
+                                     self.vectors[thing],
+                                     self.target_variable[thing],
+                                     scoring='accuracy',
+                                     cv=cv,
+                                     n_jobs=-1)
 
-            train_target = self.target_variable[thing][:ninety_percent]
-            test_target = self.target_variable[thing][ninety_percent:]
-
-            clf = LogisticRegression(random_state=random_seed)
-            clf.fit(train_vectors, train_target)
-
-            train_score = clf.score(train_vectors, train_target)
-            test_score = clf.score(test_vectors, test_target)
-
-            self.results[f"{thing}_train_score"] = train_score
-            self.results[f"{thing}_test_score"] = test_score
-
-            print(f"{thing} train score: {train_score}")
-            print(f"{thing} test score: {test_score}")
+            print(f'{thing} test score: %.3f (%.3f)' % (mean(scores), std(scores)))
+            self.results[f"{thing}_test_scores"] = list(scores)
             self.save_result()
 
     def load_samples(self, sample_generator):
