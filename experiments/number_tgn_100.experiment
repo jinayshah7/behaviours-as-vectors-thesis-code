@@ -18,6 +18,6 @@
   ],
   "training_sample_filename": "sample.json",
   "vector_addition_constant": 0.05,
-  "number_of_games": 4000,
+  "number_of_games": 100,
   "vector_tag": "number_tgn_100"
 }

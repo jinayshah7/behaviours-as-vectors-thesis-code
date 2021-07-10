@@ -20,6 +20,7 @@ class VectorTrainingSampleGenerator:
 
         self.line_training_edges_filename = self.experiment.variables["line_training_edges_filename"]
         self.line_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.line_training_edges_filename}"
+        self.line_training_labels_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}.line_labels"
 
         self.tgn_training_edges_filename = self.experiment.variables["tgn_training_edges_filename"]
         self.tgn_training_edges_filename = f"{self.VECTOR_TRAINING_DIRECTORY}/{self.experiment.name}_{self.tgn_training_edges_filename}"
@@ -45,7 +46,7 @@ class VectorTrainingSampleGenerator:
 
     def generate_big_graph(self):
         self.load_game_ids()
-        for game_id in tqdm(self.game_ids[:]):
+        for game_id in tqdm(self.game_ids):
             game = Game(game_id, self.experiment)
             game.download_json()
             game.build_graph()
@@ -83,7 +84,7 @@ class VectorTrainingSampleGenerator:
     def save_edges_for_tgn(self):
         with open(self.tgn_training_edges_filename, 'w') as f:
             for single_edge in sorted(self.edge_list, key=lambda x: x[2]):
-                f.write(f"{single_edge[0]},{single_edge[1]},{single_edge[2]}\n")
+                f.write(f"{single_edge[0]},{single_edge[1]},{single_edge[2]},0,0,0,0,0\n")
 
     def save_edges_for_node2vec(self):
         with open(self.node2vec_training_edges_filename, 'w') as f:
@@ -93,19 +94,14 @@ class VectorTrainingSampleGenerator:
                 f.write(f"{single_edge[0]} {single_edge[1]}\n")
 
     def save_edges_for_line(self):
-        with open(self.line_training_edges_filename, 'w') as f:
-            edges = [(edge[0], edge[1]) for edge in self.edge_list]
-            edges = list(set(edges))
-            added_edges = set()
-            for single_edge in edges:
-                if (single_edge[0], single_edge[1]) in added_edges:
-                    continue
-                if single_edge[0] == single_edge[1]:
-                    continue
-                f.write(f"{single_edge[0]} {single_edge[1]}\n")
-                f.write(f"{single_edge[1]} {single_edge[0]}\n")
-                added_edges.add((single_edge[0], single_edge[1]))
-                added_edges.add((single_edge[1], single_edge[0]))
+        with open(self.line_training_edges_filename, 'w') as edge_file:
+            with open(self.line_training_labels_filename, 'w') as label_file:
+                for s, nbrs in self.graph.adjacency():
+                    line = str(s) + " "
+                    for t, data in nbrs.items():
+                        line += str(t) + " "
+                    edge_file.write(line + "\n")
+                    label_file.write(str(s) + " " + str(s) + "\n")
 
     def save_edge_list(self):
         new_reverse_mapping = {}
