@@ -19,7 +19,7 @@ def process(experiment_name):
 
 
 def main():
-    with Pool(2) as p:
+    with Pool(32) as p:
         p.map(process, LIST_OF_EXPERIMENTS)
 
 
