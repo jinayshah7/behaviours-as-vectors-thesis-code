@@ -33,6 +33,7 @@ class VectorTrainingSampleGenerator:
         self.edge_list = []
         self.name_id_mapping = {}
         self.graph = nx.MultiGraph()
+        self.adjacency_list = {}
 
     def load_game_ids(self):
         if self.game_id_file_exists():
@@ -96,12 +97,13 @@ class VectorTrainingSampleGenerator:
     def save_edges_for_line(self):
         with open(self.line_training_edges_filename, 'w') as edge_file:
             with open(self.line_training_labels_filename, 'w') as label_file:
-                for s, nbrs in self.graph.adjacency():
-                    line = str(s) + " "
-                    for t, data in nbrs.items():
-                        line += str(t) + " "
+                self.make_adjacency_list()
+                for node, nbrs in self.adjacency_list.items():
+                    line = str(node) + " "
+                    for nbr in nbrs:
+                        line += str(nbr) + " "
                     edge_file.write(line + "\n")
-                    label_file.write(str(s) + " " + str(s) + "\n")
+                    label_file.write(str(node) + " " + str(node) + "\n")
 
     def save_edge_list(self):
         new_reverse_mapping = {}
@@ -110,3 +112,16 @@ class VectorTrainingSampleGenerator:
 
         with open(self.name_id_mapping_filename, 'w') as f:
             json.dump(new_reverse_mapping, f)
+
+    def make_adjacency_list(self):
+        edges = [(edge[0], edge[1]) for edge in self.edge_list]
+        edges = list(set(edges))
+
+        for src, dst in edges:
+            if src not in self.adjacency_list:
+                self.adjacency_list[src] = []
+            if dst not in self.adjacency_list:
+                self.adjacency_list[dst] = []
+            self.adjacency_list[src].append(dst)
+            self.adjacency_list[dst].append(src)
+
