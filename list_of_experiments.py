@@ -2,7 +2,7 @@ LIST_OF_EXPERIMENTS = [
     # "dimension_line_128",
     # "dimension_line_16",
     # "dimension_line_256",
-    "dimension_line_512"
+    # "dimension_line_512",
     # "dimension_node2vec_128",
     # "dimension_node2vec_16",
     # "dimension_node2vec_256",
@@ -11,7 +11,7 @@ LIST_OF_EXPERIMENTS = [
     # "dimension_tgn_16",
     # "dimension_tgn_256",
     # "dimension_tgn_512",
-    # "number_line_100",
+    "number_line_100"
     # "number_line_3000",
     # "number_line_500",
     # "number_node2vec_100",

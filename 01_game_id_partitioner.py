@@ -25,9 +25,6 @@ def main():
     for experiment_name in LIST_OF_EXPERIMENTS:
         experiment = Experiment(experiment_name)
 
-        if experiment.already_done():
-            continue
-
         number_of_games = experiment.variables["number_of_games"]
         game_ids = get_all_game_ids(ALL_GAME_IDS_FILE)
         game_ids = game_ids[:number_of_games]
