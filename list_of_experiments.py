@@ -18,7 +18,7 @@ LIST_OF_EXPERIMENTS = [
     # "number_node2vec_3000",
     # "number_node2vec_500",
     # "number_tgn_100",
-    # "number_tgn_3000",
+    "number_tgn_3000"
     # "number_tgn_500",
     # "step_line_0025",
     # "step_line_05",
