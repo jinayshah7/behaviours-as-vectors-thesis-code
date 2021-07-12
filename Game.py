@@ -1,7 +1,7 @@
 import json
 import os
 import random
-
+import numpy as np
 import requests as r
 from tqdm import tqdm
 
@@ -77,16 +77,6 @@ class Game:
             return True
 
     def build_vector_timeline(self, vectors):
-        # if self.vector_timeline_already_exists():
-        #     with open(self.vector_timeline_filename) as f:
-        #         self.vector_timeline = json.load(f)
-        #         try:
-        #             self.download_json()
-        #         except:
-        #             pass
-        #         self.build_graph()
-        #         self.graph.build_sorted_edges()
-        #         return
         try:
             self.download_json()
         except:
@@ -108,10 +98,8 @@ class Game:
 
     @staticmethod
     def _relate_vectors(vector_1, vector_2):
-        resultant_vector = []
-        for n1, n2 in zip(vector_1, vector_2):
-            resultant_vector.append(n1 + n2)
-        return resultant_vector
+        resultant_vector = np.array(vector_1) + np.array(vector_2)
+        return list(resultant_vector)
 
     def sample_vector_timeline(self, specific_category):
         
@@ -147,20 +135,22 @@ class Game:
 
     def get_latest_vector(self, node_name, timeslot, vectors):
         edges_before_timeslot = []
-
+        default_vector = []
+        for name, vector in vectors.vectors.items():
+            default_vector = list(np.zeros(len(vector)))
         for u, v, d in self.graph.graph.edges(data=True):
             if d.get('timeslot', -1) <= timeslot and u == node_name:
                 edges_before_timeslot.append((u, v, d.get('timeslot', -1)))
 
         if not edges_before_timeslot:
-            return vectors.vectors.get(node_name, [0, 0, 0])
+            return vectors.vectors.get(node_name, default_vector)
 
         latest_edge = max(edges_before_timeslot, key=lambda edge: edge[2])
         latest_timeslot = latest_edge[2]
 
         if self.vector_timeline[latest_timeslot].get(node_name, 0):
             return self.vector_timeline[latest_timeslot][node_name]
-        return vectors.vectors.get(node_name, [0, 0, 0])
+        return vectors.vectors.get(node_name, default_vector)
 
     def fill_empty_spaces_in_vector_timeline(self):
         timeslots = sorted(self.vector_timeline.items(), key=lambda x: int(x[0]))

@@ -1,4 +1,5 @@
 import json
+import time
 from statistics import mean
 
 from numpy import array
@@ -29,6 +30,7 @@ class ClassifierTrainer:
         random_seed = self.experiment.variables["random_seed_2"]
         print(f"Experiment: {self.experiment.variables['vector_tag']}")
         for thing in self.things_to_include:
+
             clf = make_pipeline(preprocessing.StandardScaler(),
                                 LogisticRegression(random_state=random_seed))
             cv = KFold(n_splits=10)
@@ -37,7 +39,8 @@ class ClassifierTrainer:
                                      self.vectors[thing],
                                      self.target_variable[thing],
                                      scoring='accuracy',
-                                     cv=cv)
+                                     cv=cv,
+                                     n_jobs=1)
 
             print(f'{thing} test score: %.3f (%.3f)' % (mean(scores), std(scores)))
             self.results[f"{thing}_test_scores"] = list(scores)
