@@ -9,6 +9,7 @@ from Graph import Graph
 from secrets import API_KEY, API_URL
 # API_KEY, API_URL = "", ""
 
+
 class Game:
     GAME_JSON_DIRECTORY = "game_json_files"
     VECTOR_TIMELINE_DIRECTORY = "game_vector_timelines"
@@ -24,6 +25,7 @@ class Game:
         self.reserved_for_vector_training = False
         self.edge_frequency = {}
         self.edge_frequency_category_wise = {}
+        self.vector_size = 0
 
         self.json_filename = f'{self.GAME_JSON_DIRECTORY}/{self.id}.json'
         self.vector_timeline_filename = f'{self.VECTOR_TIMELINE_DIRECTORY}/{self.experiment.variables["vector_tag"]}_{self.id}.vtime '
@@ -92,9 +94,6 @@ class Game:
             self.update_vector_timeline(edge, vectors)
 
         self.fill_empty_spaces_in_vector_timeline()
-
-        # with open(self.vector_timeline_filename, 'w') as f:
-        #     json.dump(self.vector_timeline, f)
 
     @staticmethod
     def _relate_vectors(vector_1, vector_2):

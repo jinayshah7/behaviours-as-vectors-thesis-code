@@ -1,1 +1,97 @@
-{"edge_names_filename": "edge_id_names.json", "line_training_edges_filename": "line.edges", "node2vec_training_edges_filename": "node2vec.edges", "percentage_to_reserve_for_vectors": 0.9, "random_seed_1": 25364, "random_seed_2": 47585, "samples_per_game": 100, "tgn_training_edges_filename": "tgn.edges", "things_to_include_from_player_summary": ["purchase_log", "kills_log", "runes_log"], "things_to_include_from_teamfights": ["ability_uses", "item_uses"], "training_sample_filename": "sample.json", "vector_addition_constant": 0.05, "number_of_games": 500, "vector_tag": "number_tgn_500", "results": {"purchase_log_test_scores": [0.588, 0.596, 0.57, 0.58, 0.546, 0.648, 0.59, 0.542, 0.576, 0.628], "kills_log_test_scores": [0.668, 0.616, 0.576, 0.614, 0.636, 0.544, 0.582, 0.6, 0.584, 0.528], "runes_log_test_scores": [0.563265306122449, 0.6571428571428571, 0.5346938775510204, 0.6163265306122448, 0.5469387755102041, 0.5693877551020409, 0.5541922290388548, 0.621676891615542, 0.5521472392638037, 0.5848670756646217], "ability_uses_test_scores": [0.516, 0.574, 0.6, 0.662, 0.578, 0.618, 0.554, 0.534, 0.6, 0.606], "item_uses_test_scores": [0.588, 0.572, 0.616, 0.646, 0.608, 0.584, 0.572, 0.606, 0.594, 0.5831663326653307], "all_test_scores": [0.6048192771084338, 0.6076305220883534, 0.6409638554216868, 0.6389558232931727, 0.578714859437751, 0.6500602651667337, 0.5837685817597429, 0.620731217356368, 0.6002410606669345, 0.6697468862997188]}}
+{
+  "edge_names_filename": "edge_id_names.json",
+  "line_training_edges_filename": "line.edges",
+  "node2vec_training_edges_filename": "node2vec.edges",
+  "number_of_games": 500,
+  "percentage_to_reserve_for_vectors": 0.9,
+  "random_seed_1": 25364,
+  "random_seed_2": 47585,
+  "results": {
+    "purchase_log_test_scores": [
+      0.588,
+      0.596,
+      0.57,
+      0.58,
+      0.546,
+      0.648,
+      0.59,
+      0.542,
+      0.576,
+      0.628
+    ],
+    "kills_log_test_scores": [
+      0.668,
+      0.616,
+      0.576,
+      0.614,
+      0.636,
+      0.544,
+      0.582,
+      0.6,
+      0.584,
+      0.528
+    ],
+    "runes_log_test_scores": [
+      0.563265306122449,
+      0.6571428571428571,
+      0.5346938775510204,
+      0.6163265306122448,
+      0.5469387755102041,
+      0.5693877551020409,
+      0.5541922290388548,
+      0.621676891615542,
+      0.5521472392638037,
+      0.5848670756646217
+    ],
+    "ability_uses_test_scores": [
+      0.516,
+      0.574,
+      0.6,
+      0.662,
+      0.578,
+      0.618,
+      0.554,
+      0.534,
+      0.6,
+      0.606
+    ],
+    "item_uses_test_scores": [
+      0.588,
+      0.572,
+      0.616,
+      0.646,
+      0.608,
+      0.584,
+      0.572,
+      0.606,
+      0.594,
+      0.5831663326653307
+    ],
+    "all_test_scores": [
+      0.6048192771084338,
+      0.6076305220883534,
+      0.6409638554216868,
+      0.6389558232931727,
+      0.578714859437751,
+      0.6500602651667337,
+      0.5837685817597429,
+      0.620731217356368,
+      0.6002410606669345,
+      0.6697468862997188
+    ]
+  },
+  "samples_per_game": 100,
+  "tgn_training_edges_filename": "tgn.edges",
+  "things_to_include_from_player_summary": [
+    "purchase_log",
+    "kills_log",
+    "runes_log"
+  ],
+  "things_to_include_from_teamfights": [
+    "ability_uses",
+    "item_uses"
+  ],
+  "training_sample_filename": "sample.json",
+  "vector_addition_constant": 0.05,
+  "vector_tag": "number_tgn_500"
+}
