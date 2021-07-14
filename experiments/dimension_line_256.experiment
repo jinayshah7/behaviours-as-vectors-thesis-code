@@ -4,8 +4,8 @@
   "node2vec_training_edges_filename": "node2vec.edges",
   "number_of_games": 4000,
   "percentage_to_reserve_for_vectors": 0.9,
-  "random_seed_1": 457568,
-  "random_seed_2": 79457467,
+  "random_seed_1": 4258457,
+  "random_seed_2": 87972314,
   "results": {
     "purchase_log_test_scores": [
       0.6057926829268293,
