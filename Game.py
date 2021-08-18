@@ -137,6 +137,7 @@ class Game:
         default_vector = []
         for name, vector in vectors.vectors.items():
             default_vector = list(np.zeros(len(vector)))
+            break
         for u, v, d in self.graph.graph.edges(data=True):
             if d.get('timeslot', -1) <= timeslot and u == node_name:
                 edges_before_timeslot.append((u, v, d.get('timeslot', -1)))

@@ -1,0 +1,16 @@
+{
+  "edge_names_filename": "edge_id_names.json",
+  "line_training_edges_filename": "line.edges",
+  "node2vec_training_edges_filename": "node2vec.edges",
+  "number_of_games": 4000,
+  "percentage_to_reserve_for_vectors": 0.9,
+  "random_seed_1": 645852,
+  "random_seed_2": 457453,
+  "samples_per_game": 100,
+  "tgn_training_edges_filename": "tgn.edges",
+  "things_to_include_from_player_summary": ["purchase_log", "kills_log", "runes_log"],
+  "things_to_include_from_teamfights": ["ability_uses", "item_uses"],
+  "training_sample_filename": "sample.json",
+  "vector_addition_constant": 0.05,
+  "vector_tag": "10fold_node2vec_10"
+}
