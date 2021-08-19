@@ -22,10 +22,10 @@ def save_game_ids(game_ids, filename):
 
 
 def get_start_end_indexes(experiment_name, total_games):
-    chunks = experiment_name.split('-')
+    chunks = experiment_name.split('_')
     fold_number = (int(chunks[-1]) - 1)
-    start_index = (fold_number * 10) * total_games
-    end_index = ((fold_number * 10) + 10) * total_games
+    start_index = int((fold_number * 10)/100 * total_games)
+    end_index = int(((fold_number * 10) + 10)/100 * total_games)
     return start_index, end_index
 
 

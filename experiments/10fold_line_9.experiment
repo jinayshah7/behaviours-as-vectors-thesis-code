@@ -12,5 +12,5 @@
   "things_to_include_from_teamfights": ["ability_uses", "item_uses"],
   "training_sample_filename": "sample.json",
   "vector_addition_constant": 0.05,
-  "vector_tag": "10fold_line_8"
+  "vector_tag": "10fold_line_9"
 }
